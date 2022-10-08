@@ -1,4 +1,3 @@
-from traceback import print_tb
 import requests
 
 class send_payload:
@@ -10,7 +9,6 @@ class send_payload:
     def choose(self):
         chs = input("\n\nPlease choose what you want to do: \n\n" + "press 1: To Insert Data in the Database\n" + "press 2: To Read All Data in the Database \n" + "press 3: To Update some info in the Database\n" +"press 4: To Delete Specific User in the Database\n"+"press 5: To Exit Program \n\n>>>")        
         return chs
-
 
 obj_send_payload = send_payload()
 while True:
