@@ -13,7 +13,7 @@ print('PROGRAM IS RUNNING!!!')
 
 class send_payload:
     def __init__(self):
-        self.payload_insert = {"id":'',"start":'',"end":''}
+        self.payload_insert = {"id":'',"date_time":''}
 
 obj_send_payload = send_payload()
 while True:
@@ -38,40 +38,37 @@ while True:
 
         (x, y, w, h)=cv2.boundingRect(contour)
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0,255,0), 3)
+
     status_list.append(status)
 
     status_list=status_list[-2:]
 
+    current_dateTime = datetime.now()
+    #format the 12 hr format
+    d = datetime.strptime(str(current_dateTime.hour)+":"+str(current_dateTime.minute), "%H:%M")
+    formatted_time = d.strftime("%I:%M %p")
+    #format the current date in words 
+    formatted_date = datetime.now().strftime("%B %d, %Y")
+
+    date_time = formatted_date + formatted_time
 
     if status_list[-1]==1 and status_list[-2]==0:
-        times.append(datetime.now())
+        times.append(date_time)
     if status_list[-1]==0 and status_list[-2]==1:
-        times.append(datetime.now())
+        times.append(date_time)
 
+    for insert_date_time in times:
+        obj_send_payload.payload_insert['date_time'] = str(insert_date_time)
+        check = requests.post('http://localhost:2022/connection',json=obj_send_payload.payload_insert)
+        print(check.text)
 
-    # cv2.imshow("Gray Frame",gray)
-    # cv2.imshow("Delta Frame",delta_frame)
-    # cv2.imshow("Threshold Frame",thresh_frame)
     cv2.imshow("Color Frame",frame)
 
     key=cv2.waitKey(1)
 
-    #PRESS 's' TO SAVE
-    if key == ord('s'):
-        if status == 1:
-            times.append(datetime.now())
+    if key == ord('c'):
         break
 
-for i in range(0, len(times), 2):
-    df = df.append({"Start": times[i],"End": times[i+1]}, ignore_index=True)
-    start = (times[i])
-    end = (times[i+1])
-    print(start)
-    print(end)
-    obj_send_payload.payload_insert["start"] = str(start)
-    obj_send_payload.payload_insert["end"] = str(end)
-    check = requests.post('http://localhost:2022/connection',json=obj_send_payload.payload_insert)
-    print(check.text)
 
 video.release()
 cv2.destroyAllWindows

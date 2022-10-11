@@ -16,11 +16,11 @@ app.use(bodyParser.json());
 
 // CREATE(insert)
 app.post("/connection", (req, res) => {
-    const { start, end } = req.body;
+    const { date_time } = req.body;
   
     connection.query(
-      "INSERT INTO detection (start,end) VALUES (?,?)",
-      [start, end],
+      "INSERT INTO detection (date_time) VALUES (?)",
+      [date_time],
       (err, results) => {
         try {
           if (results.affectedRows > 0) {
