@@ -35,32 +35,28 @@ while True:
         if cv2.contourArea(contour) < 10000:
             continue
         status=1
-
         (x, y, w, h)=cv2.boundingRect(contour)
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0,255,0), 3)
 
-    status_list.append(status)
+    # times.append(status)
 
-    status_list=status_list[-2:]
+    print(status)
 
-    current_dateTime = datetime.now()
-    #format the 12 hr format
-    d = datetime.strptime(str(current_dateTime.hour)+":"+str(current_dateTime.minute), "%H:%M")
-    formatted_time = d.strftime("%I:%M %p")
-    #format the current date in words 
-    formatted_date = datetime.now().strftime("%B %d, %Y")
+    if status == 1:
+        current_dateTime = datetime.now()
+        #format the 12 hr format
+        d = datetime.strptime(str(current_dateTime.hour)+":"+str(current_dateTime.minute), "%H:%M")
+        formatted_time = d.strftime("%I:%M %p")
+        #format the current date in words 
+        formatted_date = datetime.now().strftime("%B %d, %Y")
 
-    date_time = formatted_date + formatted_time
-
-    if status_list[-1]==1 and status_list[-2]==0:
-        times.append(date_time)
-    if status_list[-1]==0 and status_list[-2]==1:
-        times.append(date_time)
-
-    for insert_date_time in times:
-        obj_send_payload.payload_insert['date_time'] = str(insert_date_time)
+        date_time = formatted_date + formatted_time
+        obj_send_payload.payload_insert['date_time'] = str(date_time)
         check = requests.post('http://localhost:2022/connection',json=obj_send_payload.payload_insert)
-        print(check.text)
+        print(obj_send_payload.payload_insert)
+
+    else:
+        print("NO MOTION DETECTED!")
 
     cv2.imshow("Color Frame",frame)
 
