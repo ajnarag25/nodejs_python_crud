@@ -4,12 +4,10 @@ import requests
 from datetime import datetime
 
 first_frame = None
-status_list = [None,None]
-times = []
-df=pandas.DataFrame(columns=["Start","End"])
+df=pandas.DataFrame(columns=["Date","Time"])
 
 video = cv2.VideoCapture(0)
-print('PROGRAM IS RUNNING!!!')
+print('')
 
 class send_payload:
     def __init__(self):
@@ -38,8 +36,6 @@ while True:
         (x, y, w, h)=cv2.boundingRect(contour)
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0,255,0), 3)
 
-    # times.append(status)
-
     print(status)
 
     if status == 1:
@@ -53,7 +49,11 @@ while True:
         date_time = formatted_date + formatted_time
         obj_send_payload.payload_insert['date_time'] = str(date_time)
         check = requests.post('http://localhost:2022/connection',json=obj_send_payload.payload_insert)
-        print(obj_send_payload.payload_insert)
+
+        print(check.text)
+        print("MOTION DETECTED!")
+        print_pandas = df.append({"Date": formatted_date,"Time": formatted_time}, ignore_index=True)
+        print(print_pandas)
 
     else:
         print("NO MOTION DETECTED!")
