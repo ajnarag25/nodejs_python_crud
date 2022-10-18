@@ -62,7 +62,7 @@ while True:
         convertToBinaryData(filename="./upload/image.jpg")
 
             
-    cv2.imshow("Color Frame",frame)
+    cv2.imshow("MOTION DETECTOR CAMERA",frame)
     # WAITKEY
     key=cv2.waitKey(1)
     if key == ord('c'):
