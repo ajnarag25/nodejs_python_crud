@@ -1,4 +1,3 @@
-import re
 from time import time
 import cv2, pandas
 import requests
